@@ -23,7 +23,8 @@ function traj = TrajectoryGenerator(T_se_initial, T_sc_initial, T_sc_final, T_ce
 %   r_11, r_12, r_13, r_21, r_22, r_23, r_31, r_32, r_33, p_x, p_y, p_z, gripper_state
 
 % Add the path for the MR repo
-addpath("C:\Users\jnrco\OneDrive - Cal Poly\Desktop\UCSD\mr");
+addpath("C:\Users\Andrew Copeland\Documents\Matlab\MAE 204\mr")
+%addpath("C:\Users\jnrco\OneDrive - Cal Poly\Desktop\UCSD\mr");
 
 % Duration of each segment (s)
     t1 = 1;    % Move the gripper to the standoff configuration above the cube

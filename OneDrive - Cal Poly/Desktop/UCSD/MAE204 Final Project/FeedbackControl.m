@@ -33,7 +33,8 @@ function [V, u, thetad, Je, J_base, J_arm, Vd, X_err] = FeedbackControl(config, 
 % Jacobian computed based on the current arm configuration
 
 %% NEED TO CHANGE THIS WHEN RUNNING ON A DIFFERENT MACHINE
-addpath("C:\Users\jnrco\OneDrive - Cal Poly\Desktop\UCSD\mr");
+%addpath("C:\Users\jnrco\OneDrive - Cal Poly\Desktop\UCSD\mr");
+addpath("C:\Users\Andrew Copeland\Documents\MATLAB\MAE 204\mr");
 
 % NOTE: Tolerance has been chosen for pinv!!
 tol = 1e-4;
