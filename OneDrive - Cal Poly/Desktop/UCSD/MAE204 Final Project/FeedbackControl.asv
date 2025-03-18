@@ -1,4 +1,4 @@
-function [V, u, thetad, Je, J_base, J_arm, Vd, X_err] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt)
+function [V, u, thetad, X_err, T_se] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt)
 % This function calculates the task-space feedforward and feedback control
 % for the end-effector
 %
@@ -33,7 +33,9 @@ function [V, u, thetad, Je, J_base, J_arm, Vd, X_err] = FeedbackControl(config, 
 % Jacobian computed based on the current arm configuration
 
 %% NEED TO CHANGE THIS WHEN RUNNING ON A DIFFERENT MACHINE
-addpath("C:\Users\jnrco\OneDrive - Cal Poly\Desktop\UCSD\mr");
+%addpath("C:\Users\jnrco\OneDrive - Cal Poly\Desktop\UCSD\mr");
+addpath("C:\Users\Andrew Copeland\Documents\MATLAB\MAE 204\mr");
+
 % NOTE: Tolerance has been chosen for pinv!!
 tol = 1e-4;
 
@@ -93,6 +95,7 @@ M_0e = [1   0   0   0.033
 
 T_0e = FKinBody(M_0e, Blist, arm_config');
 
+T_se = T_b0*T_0e*
 F6 = [zeros(1, size(F, 2))
       zeros(1, size(F, 2))
                F

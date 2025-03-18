@@ -1,4 +1,4 @@
-function [V, u, thetad, Je, J_base, J_arm, Vd, X_err] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt)
+function [V, u, thetad, X_err] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt)
 % This function calculates the task-space feedforward and feedback control
 % for the end-effector
 %
@@ -34,10 +34,10 @@ function [V, u, thetad, Je, J_base, J_arm, Vd, X_err] = FeedbackControl(config, 
 
 %% NEED TO CHANGE THIS WHEN RUNNING ON A DIFFERENT MACHINE
 %addpath("C:\Users\jnrco\OneDrive - Cal Poly\Desktop\UCSD\mr");
-addpath("C:\Users\Andrew Copeland\Documents\MATLAB\MAE 204\mr");
+%addpath("C:\Users\Andrew Copeland\Documents\MATLAB\MAE 204\mr");
 
 % NOTE: Tolerance has been chosen for pinv!!
-tol = 1e-4;
+tol = 1e-2;
 
 %% Separate arm configurations
 arm_config = config(4:8);
@@ -55,7 +55,13 @@ Vd = se3ToVec(Vd_mat)/dt; % apparently need to divide by dt since Vd is the body
 % numerical method here
 
 %% Compute error twist integral X_err_int by using Euler integration as approximation
-X_err_int = X_err + X_err * dt;
+%--- (1) Make an integral variable persist across calls:
+persistent X_err_int; 
+    if isempty(X_err_int)
+        % Initialize integral to zero on the first call
+        X_err_int = zeros(6,1);
+    end
+X_err_int = X_err_int + X_err * dt;
 
 %% Get the adjoint
 Ad_X = Adjoint(X \ X_d);

@@ -1,4 +1,4 @@
-function traj = TrajectoryGenerator(T_se_initial, T_sc_initial, T_sc_final, T_ce_grasp, T_ce_standoff, k, dt)
+function traj = TrajectoryGenerator(T_se_initial, T_sc_initial, T_sc_final, T_ce_grasp, T_ce_standoff, k)
 % This function generates a reference trajectory for the end effector-frame
 %
 % Inputs:
@@ -32,11 +32,12 @@ function traj = TrajectoryGenerator(T_se_initial, T_sc_initial, T_sc_final, T_ce
     t3 = 0.63;  % Pause to close the gripper (1)
     t4 = 5;    % Move the gripper back to standoff configuration
     t5 = 5;    % Move the gripper to standoff configuration above the final configuration
-    t6 = 5;    % Move the gripper to the final configuration of the object
-    t7 = 0.63;  % Pause to open the gripper (1)
-    t8 = 5;    % Move the gripper back to the standoff configuration
+    t6 = 2;    % Move the gripper to the final configuration of the object
+    t7 = 0.5;  % Pause to open the gripper (1)
+    t8 = 2;    % Move the gripper back to the standoff configuration
 
     % Define time step for each increment (s)
+    dt = 0.01;
     N1 = t1 * k / dt;
     N2 = t2 * k / dt;
     N3 = t3 * k / dt;
@@ -54,7 +55,7 @@ function traj = TrajectoryGenerator(T_se_initial, T_sc_initial, T_sc_final, T_ce
     T_grasp_final = T_sc_final * T_ce_grasp;
 
 % Initialize the traj cell array
-    traj = cell(totalsteps, 2);
+    traj = cell(totalsteps, 2);  % TODO: see if initializing to (say) zero is any faster
     stepcounter = 1;
 
 % Create a function to append each trajectory to the next
@@ -111,19 +112,19 @@ if size(traj, 1) ~= totalsteps
     error('Error: trajectory cell array wrong size');
 end
  
-% csventries = zeros(totalsteps, 13); % Preallocate the csv file
-% 
-%     for j = 1:totalsteps
-%         Tmat = traj{j, 1};
-%         gripperstate = traj{j, 2};
-%         % Because each entry is a transformation matrix, we don't care
-%         % about entries 41, 42, 43, or 44 (0, 0, 0, 1)
-%         % Want the upper 3 x 3 (R) and the upper-right 3 x 1 (p)
-%         csventries(j, :) = [Tmat(1,1), Tmat(1,2), Tmat(1,3), ...
-%                             Tmat(2,1), Tmat(2,2), Tmat(2,3), ...
-%                             Tmat(3,1), Tmat(3,2), Tmat(3,3), ...
-%                             Tmat(1,4), Tmat(2,4), Tmat(3,4), gripperstate];
-%     end
+csventries = zeros(totalsteps, 13); % Preallocate the csv file
+
+    for j = 1:totalsteps
+        Tmat = traj{j, 1};
+        gripperstate = traj{j, 2};
+        % Because each entry is a transformation matrix, we don't care
+        % about entries 41, 42, 43, or 44 (0, 0, 0, 1)
+        % Want the upper 3 x 3 (R) and the upper-right 3 x 1 (p)
+        csventries(j, :) = [Tmat(1,1), Tmat(1,2), Tmat(1,3), ...
+                            Tmat(2,1), Tmat(2,2), Tmat(2,3), ...
+                            Tmat(3,1), Tmat(3,2), Tmat(3,3), ...
+                            Tmat(1,4), Tmat(2,4), Tmat(3,4), gripperstate];
+    end
 
 %filename = 'trajectory.csv';
 %writematrix(csventries, filename);
