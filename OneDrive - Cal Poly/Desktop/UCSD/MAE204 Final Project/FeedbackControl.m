@@ -1,4 +1,4 @@
-function [V, u, thetad, X_err] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt)
+function [V, u, thetad, X_err, X_err_int] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt, X_err_int)
 % This function calculates the task-space feedforward and feedback control
 % for the end-effector
 %
@@ -55,13 +55,8 @@ Vd = se3ToVec(Vd_mat)/dt; % apparently need to divide by dt since Vd is the body
 % numerical method here
 
 %% Compute error twist integral X_err_int by using Euler integration as approximation
-%--- (1) Make an integral variable persist across calls:
-persistent X_err_int; 
-    if isempty(X_err_int)
-        % Initialize integral to zero on the first call
-        X_err_int = zeros(6,1);
-    end
 X_err_int = X_err_int + X_err * dt;
+
 
 %% Get the adjoint
 Ad_X = Adjoint(X \ X_d);
