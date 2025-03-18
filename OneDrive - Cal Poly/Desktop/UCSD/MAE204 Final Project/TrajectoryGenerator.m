@@ -27,16 +27,16 @@ function traj = TrajectoryGenerator(T_se_initial, T_sc_initial, T_sc_final, T_ce
 %addpath("C:\Users\jnrco\OneDrive - Cal Poly\Desktop\UCSD\mr");
 
 % Duration of each segment (s)
-    t1 = 5;    % Move the gripper to the standoff configuration above the cube
-    t2 = 5;    % Move the gripper to the grasp position
-    t3 = 0.63;  % Pause to close the gripper (1)
-    t4 = 5;    % Move the gripper back to standoff configuration
+    t1 = 10;    % Move the gripper to the standoff configuration above the cube
+    t2 = 0.75;    % Move the gripper to the grasp position
+    t3 = 0.75;  % Pause to close the gripper (1)
+    t4 = 0.75;    % Move the gripper back to standoff configuration
     t5 = 5;    % Move the gripper to standoff configuration above the final configuration
-    t6 = 5;    % Move the gripper to the final configuration of the object
-    t7 = 0.63;  % Pause to open the gripper (1)
-    t8 = 5;    % Move the gripper back to the standoff configuration
+    t6 = 0.75;    % Move the gripper to the final configuration of the object
+    t7 = 0.75;  % Pause to open the gripper (1)
+    t8 = 0.75;    % Move the gripper back to the standoff configuration
 
-    % Define time step for each increment (s)
+    % Define number of trajectories
     N1 = t1 * k / dt;
     N2 = t2 * k / dt;
     N3 = t3 * k / dt;

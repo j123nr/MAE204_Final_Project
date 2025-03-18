@@ -1,4 +1,4 @@
-function [V, u, thetad, X_err, X_err_int] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt, X_err_int)
+function [V, u, thetad, X_err, X_err_int, mu] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt, X_err_int)
 % This function calculates the task-space feedforward and feedback control
 % for the end-effector
 %
@@ -106,6 +106,18 @@ Ad_T = Adjoint(T_0e \ inv(T_b0));
 J_base = Ad_T * F6;
 
 Je = [J_base J_arm];
+
+% Manipulability
+Jw = J_arm(1:3, :);
+Jv = J_arm(4:6, :);
+
+Aw = Jw * Jw';
+Av = Jv * Jv';
+
+muw = (sqrt(max(eig(Aw))))/(sqrt(min(eig(Aw))));
+muv = (sqrt(max(eig(Av))))/(sqrt(min(eig(Av))));
+
+mu = [muw muv];
 
 sped = pinv(Je,tol) * V;
 

@@ -1,4 +1,4 @@
-function [V, u, thetad, X_err, X_err_int] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt, X_err_int)
+function [V, u, thetad, X_err, X_err_int, mu] = FeedbackControl(config, X, X_d, X_d_next, kp, ki, dt, X_err_int, upperlim, lowerlim)
 % This function calculates the task-space feedforward and feedback control
 % for the end-effector
 %
@@ -55,13 +55,8 @@ Vd = se3ToVec(Vd_mat)/dt; % apparently need to divide by dt since Vd is the body
 % numerical method here
 
 %% Compute error twist integral X_err_int by using Euler integration as approximation
-%--- (1) Make an integral variable persist across calls:
-persistent X_err_int; 
-    if isempty(X_err_int) || (nargin == 8 && resetflag)
-        % Initialize integral to zero on the first call
-        X_err_int = zeros(6,1);
-    end
 X_err_int = X_err_int + X_err * dt;
+
 
 %% Get the adjoint
 Ad_X = Adjoint(X \ X_d);
@@ -112,7 +107,33 @@ J_base = Ad_T * F6;
 
 Je = [J_base J_arm];
 
+% Manipulability
+Jw = J_arm(1:3, :);
+Jv = J_arm(4:6, :);
+
+Aw = Jw * Jw';
+Av = Jv * Jv';
+
+muw = (sqrt(max(eig(Aw))))/(sqrt(min(eig(Aw))));
+muv = (sqrt(max(eig(Av))))/(sqrt(min(eig(Av))));
+
+mu = [muw muv];
+
 sped = pinv(Je,tol) * V;
 
 u = sped(1:4);
 thetad = sped(5:end);
+
+% Joint limit implementation
+predicted_theta = arm_config + thetad * dt;
+for i = 1:length(arm_config)
+    
+end
+
+% current_vel = max(min(current_vel, v_max), -v_max);
+% 
+% if predicted_theta(i) > upperlim(i)
+%         thetad(i) = (upperlim(i) - arm_config(i)) / dt;
+%     elseif predicted_theta(i) < lowerlim(i)
+%         thetad(i) = (arm_config(i) - lowerlim(i)) / dt;
+%     end
