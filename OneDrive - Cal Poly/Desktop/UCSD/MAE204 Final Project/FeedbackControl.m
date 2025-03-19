@@ -114,8 +114,11 @@ Jv = J_arm(4:6, :);
 Aw = Jw * Jw';
 Av = Jv * Jv';
 
-muw = (sqrt(max(eig(Aw))))/(sqrt(min(eig(Aw))));
-muv = (sqrt(max(eig(Av))))/(sqrt(min(eig(Av))));
+lambdaw = eig(Aw);
+lambdav = eig(Av);
+
+muw = (sqrt(max(lambdaw)))/(sqrt(min(lambdaw)));
+muv = (sqrt(max(lambdav)))/(sqrt(min(lambdav)));
 
 mu = [muw muv];
 
